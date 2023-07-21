@@ -160,7 +160,7 @@ const sizes = {
 
 //camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 1000)
-camera.position.z = 3
+camera.position.z = 6
 camera.lookAt(new THREE.Vector3(0, 0, 0))
 scene.add(camera)
 
