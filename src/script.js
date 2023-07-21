@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
+import { gsap } from 'gsap'
 
 THREE.ColorManagement.enabled = false
 
@@ -125,7 +126,7 @@ function drawHeart(x, y) {
 }
 
 let hearts = []
-for (let i = 0; i < 105; i++) {
+for (let i = 0; i < 204; i++) {
     const shape = drawHeart(0, 0)
     const geometry = new THREE.ShapeGeometry( shape )
     const material = new THREE.MeshMatcapMaterial()
@@ -140,9 +141,13 @@ for (let i = 0; i < 105; i++) {
     material.side = THREE.DoubleSide
     const heart = new THREE.Mesh( geometry, material ) 
 
-    heart.position.x = (Math.random() - 0.5) * 15
+    heart.position.x = (Math.random() - 0.5) * 25
     heart.position.y = (Math.random() - 0.5) * 15
     heart.position.z = (Math.random() - 0.5) * 15
+    
+    if (heart.position.z > -1 && heart.position.z < 6.5 && heart.position. y < 2 && heart.position.y > -2) {
+        heart.position.y += 4
+    }
 
     scene.add( heart )
     hearts.push(heart)
@@ -155,11 +160,15 @@ const sizes = {
 }
 
 //camera
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 1000)
-camera.position.z = 6
+const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
+camera.position.set(-8, 0, 1.5)
 camera.lookAt(new THREE.Vector3(0, 0, 0))
 scene.add(camera)
 
+gsap.to(camera.position, {duration: 10, x: 6, z: 3})
+gsap.delayedCall(9, () => {
+    gsap.to(camera.position, {duration: 20, x: 0, z: 6.5})
+})
 //Renderer
 const renderer = new THREE.WebGLRenderer({canvas: canvas})
 renderer.outputColorSpace = THREE.LinearSRGBColorSpace
@@ -188,20 +197,20 @@ const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
 
-    for (let i = 0; i < 25; i++) {
-        hearts[i].rotation.y = elapsedTime * 0.05 * i
+    for (let i = 0; i < 50; i++) {
+        hearts[i].rotation.y = elapsedTime * 0.025 * i
     }
 
-    for (let i = 25; i < 53; i++) {
-        hearts[i].rotation.y = elapsedTime * 0.05 * i
+    for (let i = 50; i < 106; i++) {
+        hearts[i].rotation.y = elapsedTime * 0.025 * i
     }
     
-    for (let i = 53; i < 75; i++) {
-        hearts[i].rotation.y = - elapsedTime * 0.025 * i
+    for (let i = 106; i < 150; i++) {
+        hearts[i].rotation.y = - elapsedTime * 0.0125 * i
     }
 
-    for (let i = 75; i < hearts.length; i++) {
-        hearts[i].rotation.y = - elapsedTime * 0.025 * i
+    for (let i = 150; i < hearts.length; i++) {
+        hearts[i].rotation.y = - elapsedTime * 0.0125 * i
     }
 
     // Update controls
