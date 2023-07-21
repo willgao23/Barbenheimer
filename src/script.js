@@ -110,7 +110,48 @@ fontLoader.load(
     }
 )
 
+//Create shapes
 
+let scale = 0.3;
+
+function drawHeart(x, y) {
+    const heartShape = new THREE.Shape();
+
+    heartShape.moveTo( x - (0.5 * scale), y - (0.5 * scale));
+    heartShape.bezierCurveTo( x - (0.5 * scale), y - (0.5 * scale), x - (0.4 * scale), y, x, y );
+    heartShape.bezierCurveTo( x + (0.6 * scale), y, x + (0.6 * scale), y - (0.7 * scale),x + (0.6 * scale), y - (0.7* scale));
+    heartShape.bezierCurveTo( x + (0.6 * scale), y - (1.1 * scale), x + (0.3 * scale), y - (1.54 * scale), x - (0.5 * scale), y - (1.9 * scale));
+    heartShape.bezierCurveTo( x - (1.2 * scale), y - (1.54 * scale), x - (1.6 * scale), y - (1.1 * scale), x - (1.6 * scale), y - (0.7 * scale));
+    heartShape.bezierCurveTo( x - (1.6 * scale), y - (0.7 * scale), x -(1.6 * scale), y, x - (1.0 * scale), y );
+    heartShape.bezierCurveTo( x - (0.7 * scale), y, x - (0.5 * scale), y - (0.5 * scale), x - (0.5 * scale), y - (0.5 * scale) );
+
+    return heartShape;
+}
+
+let hearts = []
+for (let i = 0; i < 105; i++) {
+    const shape = drawHeart(0, 0)
+    const geometry = new THREE.ShapeGeometry( shape )
+    const material = new THREE.MeshMatcapMaterial()
+    let rand = Math.random()
+    if (rand > 0.5) {
+        material.matcap = oppenheimer
+    } else if (rand < 0.25) {
+        material.matcap = barbOuter
+    } else {
+        material.matcap = barbInner
+    }
+    material.side = THREE.DoubleSide
+    const heart = new THREE.Mesh( geometry, material ) 
+
+    heart.position.x = (Math.random() - 0.5) * 15
+    heart.position.y = (Math.random() - 0.5) * 15
+    heart.position.z = (Math.random() - 0.5) * 15
+
+    scene.add( heart )
+    hearts.push(heart)
+
+}
 
 const sizes = {
     width: window.innerWidth,
@@ -141,10 +182,8 @@ window.addEventListener('resize', () =>
     camera.aspect = sizes.width / sizes.height
     camera.updateProjectionMatrix()
 
-    renderer.setSize(sizes.width, sizes.heigh)
+    renderer.setSize(sizes.width, sizes.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-
-    window.location.reload()
 })
 
 const clock = new THREE.Clock()
@@ -152,6 +191,22 @@ const clock = new THREE.Clock()
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
+
+    for (let i = 0; i < 25; i++) {
+        hearts[i].rotation.y = elapsedTime * 0.05 * i
+    }
+
+    for (let i = 25; i < 53; i++) {
+        hearts[i].rotation.y = elapsedTime * 0.05 * i
+    }
+    
+    for (let i = 53; i < 75; i++) {
+        hearts[i].rotation.y = - elapsedTime * 0.025 * i
+    }
+
+    for (let i = 75; i < hearts.length; i++) {
+        hearts[i].rotation.y = - elapsedTime * 0.025 * i
+    }
 
     // Update controls
     controls.update()
